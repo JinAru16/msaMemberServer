@@ -1,4 +1,4 @@
-package com.auth.auth.member.service;
+package com.auth.auth.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

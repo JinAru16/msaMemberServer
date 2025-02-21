@@ -1,4 +1,4 @@
-package com.auth.auth.member.domain.request;
+package com.auth.auth.user.domain.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.auth.auth.member.controller;
+package com.auth.auth.user.controller;
 
 
-import com.auth.auth.member.service.MemberService;
+import com.auth.auth.user.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
