@@ -1,5 +1,6 @@
 package com.auth.auth.user.domain.entity;
 
+import com.auth.auth.user.domain.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,9 @@ public class Users implements UserDetails {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
