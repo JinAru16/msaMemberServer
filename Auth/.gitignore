@@ -39,3 +39,4 @@ out/
 ### yml ###
 .yml
 application.properties
+application.yml
