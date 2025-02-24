@@ -1,10 +1,15 @@
 package com.auth.auth.config;
 
+import com.auth.auth.security.jwt.JwtAuthenticationFilter;
+import com.auth.auth.security.jwt.JwtTokenProvider;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

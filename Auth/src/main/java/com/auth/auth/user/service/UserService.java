@@ -1,5 +1,6 @@
 package com.auth.auth.user.service;
 
+import com.auth.auth.common.exception.UserException;
 import com.auth.auth.user.domain.Role;
 import com.auth.auth.user.domain.entity.Users;
 import com.auth.auth.user.domain.request.MemberRequest;
@@ -18,10 +19,10 @@ public class UserService {
 
     public Users register(MemberRequest request) {
        if(userRepository.findUsersByUserName(request.getUsername()).isPresent()){
-           System.out.println("유저가 존재");
+           throw new UserException("존재하는 사용자입니다.");
         }
        Users users = Users.builder()
-               .userName(request.getUsername())
+               .username(request.getUsername())
                .password(passwordEncoder.encode(request.getPassword()))
                .email(request.getEmail())
                .role(Role.USER)
