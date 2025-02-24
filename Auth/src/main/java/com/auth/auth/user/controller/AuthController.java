@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
@@ -29,7 +29,7 @@ public class AuthController {
         // JWT 발급
         String jwt = jwtTokenProvider.generateToken(authentication.getName());
 
-        return ResponseEntity.ok(jwt);
+        return ResponseEntity.ok().body(jwt);
     }
 
     @PostMapping("/logout")

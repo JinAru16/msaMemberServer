@@ -18,7 +18,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public Users register(MemberRequest request) {
-       if(userRepository.findUsersByUserName(request.getUsername()).isPresent()){
+       if(userRepository.findUsersByUsername(request.getUsername()).isPresent()){
            throw new UserException("존재하는 사용자입니다.");
         }
        Users users = Users.builder()
