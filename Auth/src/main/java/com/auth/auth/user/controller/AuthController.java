@@ -28,7 +28,6 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // JWT 발급
         String jwt = jwtTokenProvider.generateToken(authentication.getName());
-
         return ResponseEntity.ok().body(jwt);
     }
 

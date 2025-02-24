@@ -1,5 +1,6 @@
 package com.auth.auth.config;
 
+import com.auth.auth.common.exception.UserException;
 import com.auth.auth.security.jwt.JwtAuthenticationFilter;
 import com.auth.auth.security.jwt.JwtTokenProvider;
 import com.auth.auth.user.repository.UserRepository;
@@ -34,7 +35,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() { // ✅ UsersRepository 주입
         return username -> repository.findUsersByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new UserException(username + "에 로그인 할 수 없습니다. 아이디나 비밀번호를 확인해주세요."));
     }
 
     @Bean
