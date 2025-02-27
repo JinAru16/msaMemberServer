@@ -1,38 +1,36 @@
 package com.auth.auth.user.controller;
 
-
-import com.auth.auth.security.jwt.JwtTokenProvider;
 import com.auth.auth.user.domain.request.LoginRequest;
+import com.auth.auth.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // JWT 발급
-        String jwt = jwtTokenProvider.generateToken(authentication.getName());
-        return ResponseEntity.ok().body(jwt);
+    public ResponseEntity<?> login(@RequestBody @Validated LoginRequest loginRequest){
+
+        HttpHeaders headers = authService.login(loginRequest);
+
+        return ResponseEntity.ok().headers(headers).body("LOGIN SUCCESS");
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(){
-        return null;
+    @PutMapping("/logout")
+    public ResponseEntity<?> logout(@CookieValue(name="jwt", required=false) @Validated String jwt){
+        // 블랙리스트에 추가하는 방식으로 로그아웃 구성.
+        ResponseCookie cookie = authService.logout(jwt);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwt.toString())
+                .body("LOGOUT SUCCESS");
+
     }
 }

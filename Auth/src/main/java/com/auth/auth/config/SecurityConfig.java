@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())  // CSRF 비활성화
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class) // CORS 필터 추가
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
                         .anyRequest().authenticated()
                 )
