@@ -2,6 +2,9 @@ package com.auth.auth.user.service;
 
 import com.auth.auth.security.jwt.JwtTokenProvider;
 import com.auth.auth.user.domain.request.LoginRequest;
+import com.auth.auth.user.domain.response.LoginResponse;
+import com.auth.auth.user.domain.response.Nickname;
+import com.auth.auth.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
@@ -22,8 +25,9 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate; // ✅ Redis 사용
+    private final UserRepository userRepository;
 
-    public HttpHeaders login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
@@ -31,8 +35,10 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        String nickname = userRepository.findUsersByUsername(loginRequest.getUsername()).get().getNickname();
+
         // JWT 발급
-        String jwt = jwtTokenProvider.generateToken(authentication);
+        String jwt = jwtTokenProvider.generateAuthToken(authentication);
         ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
                 .httpOnly(true)// js에서 접근 불가능(xss 방어)
                 .secure(false) // true면 https에서만 사용 가능. 운영은 true로
@@ -40,9 +46,11 @@ public class AuthService {
                 .maxAge(3600)
                 .sameSite("Strict") //Csrf 방어
                 .build();
+
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-        return headers;
+
+        return new LoginResponse(headers, new Nickname(nickname));
 
     }
 

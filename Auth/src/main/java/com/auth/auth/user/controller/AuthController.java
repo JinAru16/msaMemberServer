@@ -1,6 +1,7 @@
 package com.auth.auth.user.controller;
 
 import com.auth.auth.user.domain.request.LoginRequest;
+import com.auth.auth.user.domain.response.LoginResponse;
 import com.auth.auth.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +9,9 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,9 +22,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated LoginRequest loginRequest){
 
-        HttpHeaders headers = authService.login(loginRequest);
+        LoginResponse login = authService.login(loginRequest);
 
-        return ResponseEntity.ok().headers(headers).body("LOGIN SUCCESS");
+        return ResponseEntity
+                .ok()
+                .headers(login.getHeaders())
+                .body(login.getNickname());
     }
 
     @PutMapping("/logout")

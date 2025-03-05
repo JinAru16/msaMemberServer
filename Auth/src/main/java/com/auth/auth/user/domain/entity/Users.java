@@ -30,6 +30,9 @@ public class Users implements UserDetails {
     private String email;
 
     @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
     private Role role;
 
     @Override
