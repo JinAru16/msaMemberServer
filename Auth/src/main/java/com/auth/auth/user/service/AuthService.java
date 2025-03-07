@@ -16,15 +16,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
+    private final RedisTemplate<String, Object> redisTemplate;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisTemplate<String, String> redisTemplate; // ✅ Redis 사용
+
     private final UserRepository userRepository;
 
     public LoginResponse login(LoginRequest loginRequest) {

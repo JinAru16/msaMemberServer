@@ -6,6 +6,7 @@ import com.auth.auth.user.domain.entity.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final JwtConfig jwtConfig;
+
     private final RedisTemplate redisTemplate;
 
     public String generateAuthToken(Authentication authentication) {
