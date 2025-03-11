@@ -2,6 +2,7 @@ package com.auth.auth.security.jwt;
 
 import com.auth.auth.common.exception.UserException;
 import com.auth.auth.config.JwtConfig;
+import com.auth.auth.config.RedisConfig;
 import com.auth.auth.user.domain.entity.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
@@ -22,9 +23,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final JwtConfig jwtConfig;
-
-    private final RedisTemplate redisTemplate;
-
     public String generateAuthToken(Authentication authentication) {
         Users user = (Users) authentication.getPrincipal();
 
@@ -61,9 +59,6 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            if(redisTemplate.hasKey(token)){
-                throw new UserException("로그아웃된 사용자");
-            }
             Jwts.parser().setSigningKey(jwtConfig.getSecretKey()).parseClaimsJws(token);
             return true;
         } catch (Exception e) {

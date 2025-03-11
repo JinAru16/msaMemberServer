@@ -7,6 +7,7 @@ import com.auth.auth.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,6 +32,7 @@ public class SecurityConfig {
     private final UserRepository repository;
     private final CorsFilter corsFilter; // 🔥 CORS 필터 주입 (Spring Security 6.x 이후 방식)
     private final JwtTokenProvider jwtTokenProvider; // JWT 토큰 관리
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Bean
     public UserDetailsService userDetailsService() { // ✅ UsersRepository 주입
@@ -40,7 +42,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService()); // ✅ 직접 생성
+        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService(), redisTemplate); // ✅ 직접 생성
     }
 
     @Bean

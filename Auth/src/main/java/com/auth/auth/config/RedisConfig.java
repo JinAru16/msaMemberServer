@@ -14,32 +14,34 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @RequiredArgsConstructor
-
 public class RedisConfig {
-    private final RedisConnectionFactory redisConnectionFactory;
 
+    @Value("${spring.data.redis.host}")
+    private String redisHost;
+
+    @Value("${spring.data.redis.port}")
+    private int redisPort;
 
     @Value("${spring.data.redis.database}")
     private int authRedisIndex;
 
+    // ✅ RedisConnectionFactory Bean 정의
     @Bean
-    @Primary  // ✅ 기본 RedisConnectionFactory로 사용
     public LettuceConnectionFactory redisConnectionFactory() {
-        // ✅ 기존 `RedisStandaloneConfiguration`을 가져와서 DB Index만 변경
-        LettuceConnectionFactory factory = (LettuceConnectionFactory) redisConnectionFactory;
-        factory.setDatabase(authRedisIndex);
-        return factory;
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
+        config.setDatabase(authRedisIndex); // ✅ DB Index 설정
+        return new LettuceConnectionFactory(config);
     }
 
+    // ✅ RedisTemplate 설정
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory()); // ✅ 위에서 설정한 Factory 사용
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-
         return redisTemplate;
     }
 }
