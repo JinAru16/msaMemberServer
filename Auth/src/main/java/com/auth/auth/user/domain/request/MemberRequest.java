@@ -10,8 +10,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class MemberRequest {
-    public String username;
-    public String password;
-    public String nickname;
-    public String email;
+    private String username;
+    private String password;
+    private String nickname;
+    private String email;
 }

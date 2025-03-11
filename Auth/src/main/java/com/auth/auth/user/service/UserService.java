@@ -25,6 +25,7 @@ public class UserService {
                .username(request.getUsername())
                .password(passwordEncoder.encode(request.getPassword()))
                .email(request.getEmail())
+               .nickname(request.getNickname())
                .role(Role.USER)
                .build();
         return userRepository.save(users);
