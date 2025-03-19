@@ -15,7 +15,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 
 
@@ -26,12 +28,15 @@ public class JwtTokenProvider {
     public String generateAuthToken(Authentication authentication) {
         Users user = (Users) authentication.getPrincipal();
 
+        byte[] keyBytes = jwtConfig.getSecretKey().getBytes(StandardCharsets.UTF_8);
+        Key key = new SecretKeySpec(keyBytes, "HmacSHA256");  // 또는 Keys.hmacShaKeyFor(keyBytes);
+
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("role", user.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationTime()))
-                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecretKey())
+                .signWith(key, SignatureAlgorithm.HS256)  // ✅ 새 방식
                 .compact();
     }
 
@@ -59,7 +64,11 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtConfig.getSecretKey()).parseClaimsJws(token);
+            byte[] keyBytes = jwtConfig.getSecretKey().getBytes(StandardCharsets.UTF_8);
+            Jwts.parserBuilder()
+                    .setSigningKey(new SecretKeySpec(keyBytes, "HmacSHA256"))  // 서명 검증을 위한 키 설정
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             throw new UserException(e.getMessage());
