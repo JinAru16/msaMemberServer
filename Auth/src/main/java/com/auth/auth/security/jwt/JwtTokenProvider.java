@@ -40,14 +40,16 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String generateNicknameToken(String nickname) {
-        return Jwts.builder()
-                .setSubject(nickname)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationTime()))
-                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecretKey())
-                .compact();
-    }
+//    public String generateNicknameToken(String nickname) {
+//
+//
+//        return Jwts.builder()
+//                .setSubject(nickname)
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationTime()))
+//                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecretKey())
+//                .compact();
+//    }
 
     public String getUsername(String token) {
         return Jwts.parserBuilder()
@@ -77,8 +79,10 @@ public class JwtTokenProvider {
 
     // ✅ JWT에서 Claims(페이로드) 추출하는 메서드
     private Claims getClaims(String token) {
+        byte[] keyBytes = jwtConfig.getSecretKey().getBytes(StandardCharsets.UTF_8);
+
         return Jwts.parserBuilder()
-                .setSigningKey(jwtConfig.getSecretKey())  // 서명 검증을 위한 키 설정
+                .setSigningKey(new SecretKeySpec(keyBytes, "HmacSHA256"))  // 서명 검증을 위한 키 설정
                 .build()
                 .parseClaimsJws(token)  // JWT 파싱 및 검증
                 .getBody();  // Claims (페이로드) 반환
