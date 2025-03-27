@@ -1,6 +1,5 @@
 package com.auth.auth.user.controller;
 
-import com.auth.auth.user.domain.entity.Users;
 import com.auth.auth.user.domain.request.MemberRequest;
 import com.auth.auth.user.service.UserService;
 import lombok.RequiredArgsConstructor;

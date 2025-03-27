@@ -1,9 +1,11 @@
 package com.auth.auth.config;
 
 import com.auth.auth.common.exception.UserException;
+import com.auth.auth.security.auth.UserDetailsImpl;
 import com.auth.auth.security.jwt.JwtAuthenticationFilter;
 import com.auth.auth.security.jwt.JwtTokenProvider;
 import com.auth.auth.user.repository.UserRepository;
+import com.msa.common.entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +26,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Optional;
+
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
@@ -36,8 +40,13 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() { // ✅ UsersRepository 주입
-        return username -> repository.findUsersByUsername(username)
-                .orElseThrow(() -> new UserException(username + "에 로그인 할 수 없습니다. 아이디나 비밀번호를 확인해주세요."));
+        return username -> {
+            Users user = repository.findUsersByUsername(username);
+            if (user == null) {
+                throw new UsernameNotFoundException("해당 사용자가 존재하지 않습니다: " + username);
+            }
+            return new UserDetailsImpl(user);
+        };
     }
 
     @Bean

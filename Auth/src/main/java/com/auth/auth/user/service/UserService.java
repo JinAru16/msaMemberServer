@@ -1,8 +1,8 @@
 package com.auth.auth.user.service;
 
 import com.auth.auth.common.exception.UserException;
-import com.auth.auth.user.domain.Role;
-import com.auth.auth.user.domain.entity.Users;
+import com.msa.common.entity.Role;
+import com.msa.common.entity.Users;
 import com.auth.auth.user.domain.request.MemberRequest;
 import com.auth.auth.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public Users register(MemberRequest request) {
-       if(userRepository.findUsersByUsername(request.getUsername()).isPresent()){
+       if(userRepository.findUsersByUsername(request.getUsername()) != null){
            throw new UserException("존재하는 사용자입니다.");
         }
        Users users = Users.builder()

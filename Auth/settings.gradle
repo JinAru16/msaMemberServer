@@ -1,1 +1,3 @@
 rootProject.name = 'auth'
+include ':commonclass'
+project(':commonclass').projectDir = file('commonclass')

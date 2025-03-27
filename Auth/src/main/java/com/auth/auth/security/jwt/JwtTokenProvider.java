@@ -2,13 +2,11 @@ package com.auth.auth.security.jwt;
 
 import com.auth.auth.common.exception.UserException;
 import com.auth.auth.config.JwtConfig;
-import com.auth.auth.config.RedisConfig;
-import com.auth.auth.user.domain.entity.Users;
+import com.auth.auth.security.auth.UserDetailsImpl;
+import com.msa.common.entity.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
@@ -26,14 +24,14 @@ import java.util.Date;
 public class JwtTokenProvider {
     private final JwtConfig jwtConfig;
     public String generateAuthToken(Authentication authentication) {
-        Users user = (Users) authentication.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl)authentication.getPrincipal();
 
         byte[] keyBytes = jwtConfig.getSecretKey().getBytes(StandardCharsets.UTF_8);
         Key key = new SecretKeySpec(keyBytes, "HmacSHA256");  // 또는 Keys.hmacShaKeyFor(keyBytes);
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim("role", user.getRole())
+                .claim("role", userDetails.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationTime()))
                 .signWith(key, SignatureAlgorithm.HS256)  // ✅ 새 방식
