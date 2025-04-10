@@ -1,10 +1,9 @@
 package com.auth.auth.config;
-
-import com.auth.auth.common.exception.UserException;
 import com.auth.auth.security.auth.UserDetailsImpl;
 import com.auth.auth.security.jwt.JwtAuthenticationFilter;
 import com.auth.auth.security.jwt.JwtTokenProvider;
 import com.auth.auth.user.repository.UserRepository;
+import com.auth.auth.user.service.PrincipalOauth2UserService;
 import com.msa.common.entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,8 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
-
-import java.util.Optional;
 
 @EnableWebSecurity
 @Configuration
@@ -54,16 +50,21 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService(), redisTemplate); // ✅ 직접 생성
     }
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, PrincipalOauth2UserService principalOauth2UserService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())  // CSRF 비활성화
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class) // CORS 필터 추가
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/oauth2/**", "/login/**").permitAll() // ✅ 추가
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(principalOauth2UserService))
+                        .defaultSuccessUrl("/", true))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 
@@ -73,6 +74,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -86,4 +88,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
