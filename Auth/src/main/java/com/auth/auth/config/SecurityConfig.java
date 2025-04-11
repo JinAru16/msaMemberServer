@@ -3,8 +3,10 @@ import com.auth.auth.security.auth.UserDetailsImpl;
 import com.auth.auth.security.jwt.JwtAuthenticationFilter;
 import com.auth.auth.security.jwt.JwtTokenProvider;
 import com.auth.auth.user.repository.UserRepository;
+import com.auth.auth.user.service.OAuth2LoginSuccessHandler;
 import com.auth.auth.user.service.PrincipalOauth2UserService;
 import com.msa.common.entity.Users;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,7 +54,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, PrincipalOauth2UserService principalOauth2UserService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, PrincipalOauth2UserService principalOauth2UserService, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())  // CSRF 비활성화
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class) // CORS 필터 추가
@@ -64,7 +66,14 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(principalOauth2UserService))
-                        .defaultSuccessUrl("/", true))
+                        .defaultSuccessUrl("/", true)
+                        .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler((request, response, e) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json;charset=utf-8");
+                            response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+                        })
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 

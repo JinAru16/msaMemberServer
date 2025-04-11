@@ -37,7 +37,7 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String nickname = userRepository.findUsersByUsername(loginRequest.getUsername()).getNickname();
+       // String nickname = userRepository.findUsersByUsername(loginRequest.getUsername()).getNickname();
 
         // JWT 발급
         String jwt = jwtTokenProvider.generateAuthToken(authentication);
@@ -52,7 +52,7 @@ public class AuthService {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
-        return new LoginResponse(headers, new Nickname(nickname));
+        return new LoginResponse(headers);
 
     }
 

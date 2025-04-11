@@ -27,7 +27,7 @@ public class AuthController {
         return ResponseEntity
                 .ok()
                 .headers(login.getHeaders())
-                .body(login.getNickname());
+                .body("LOGIN_SUCCESS");
     }
 
     @PutMapping("/logout")

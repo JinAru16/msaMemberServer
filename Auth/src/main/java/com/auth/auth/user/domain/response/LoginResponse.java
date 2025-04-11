@@ -12,5 +12,4 @@ import org.springframework.http.HttpHeaders;
 @ToString
 public class LoginResponse {
     HttpHeaders headers;
-    Nickname nickname;
 }
