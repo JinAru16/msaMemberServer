@@ -23,7 +23,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
 
         String token = jwtTokenProvider.generateAuthToken(authentication);
 
@@ -34,11 +34,16 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                 .maxAge(3600)
                 .sameSite("Strict") //Csrf 방어
                 .build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
         response.addHeader(jwtCookie.getName(), jwtCookie.getValue());
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write("{\"response\":\"SUCCESS\"}");
+        response.setHeader("jwt", jwtCookie.toString());
+
+
     }
 
 }
