@@ -39,15 +39,7 @@ public class JwtTokenProvider {
     }
 
 //    public String generateNicknameToken(String nickname) {
-//
-//
-//        return Jwts.builder()
-//                .setSubject(nickname)
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationTime()))
-//                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecretKey())
-//                .compact();
-//    }
+
 
     public String getUsername(String token) {
         return Jwts.parserBuilder()

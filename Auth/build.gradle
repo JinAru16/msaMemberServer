@@ -59,3 +59,9 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+task customJar(type: Jar) {
+    archiveBaseName.set('my-custom-jar') // 원하는 JAR 이름
+    from('src/main/java/com/auth/auth/securityconfig') // 포함할 디렉토리
+    include '**/*.java' // .class 파일만 포함
+}
