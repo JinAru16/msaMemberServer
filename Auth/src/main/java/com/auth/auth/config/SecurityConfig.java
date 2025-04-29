@@ -1,11 +1,11 @@
 package com.auth.auth.config;
+import com.auth.auth.common.entity.Users;
 import com.auth.auth.security.auth.UserDetailsImpl;
 import com.auth.auth.security.jwt.JwtAuthenticationFilter;
 import com.auth.auth.security.jwt.JwtTokenProvider;
 import com.auth.auth.user.repository.UserRepository;
 import com.auth.auth.user.service.OAuth2LoginSuccessHandler;
 import com.auth.auth.user.service.PrincipalOauth2UserService;
-import com.msa.common.entity.Users;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

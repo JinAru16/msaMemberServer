@@ -1,16 +1,12 @@
 package com.auth.auth.user.service;
 
+import com.auth.auth.common.entity.Users;
 import com.auth.auth.common.exception.GoogleUserException;
-import com.auth.auth.common.exception.UserException;
 import com.auth.auth.security.auth.UserDetailsImpl;
 import com.auth.auth.user.repository.UserRepository;
-import com.msa.common.entity.Users;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 

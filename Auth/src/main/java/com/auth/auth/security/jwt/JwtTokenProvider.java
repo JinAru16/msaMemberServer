@@ -3,7 +3,6 @@ package com.auth.auth.security.jwt;
 import com.auth.auth.common.exception.UserException;
 import com.auth.auth.config.JwtConfig;
 import com.auth.auth.security.auth.UserDetailsImpl;
-import com.msa.common.entity.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;

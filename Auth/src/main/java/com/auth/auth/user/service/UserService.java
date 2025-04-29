@@ -1,8 +1,8 @@
 package com.auth.auth.user.service;
 
+import com.auth.auth.common.entity.Role;
+import com.auth.auth.common.entity.Users;
 import com.auth.auth.common.exception.UserException;
-import com.msa.common.entity.Role;
-import com.msa.common.entity.Users;
 import com.auth.auth.user.domain.request.MemberRequest;
 import com.auth.auth.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

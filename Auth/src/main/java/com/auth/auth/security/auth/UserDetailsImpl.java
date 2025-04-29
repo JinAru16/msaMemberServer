@@ -1,7 +1,7 @@
 package com.auth.auth.security.auth;
 
-import com.msa.common.entity.Role;
-import com.msa.common.entity.Users;
+import com.auth.auth.common.entity.Role;
+import com.auth.auth.common.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
