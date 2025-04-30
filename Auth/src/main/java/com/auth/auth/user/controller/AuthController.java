@@ -36,7 +36,7 @@ public class AuthController {
         ResponseCookie cookie = authService.logout(jwt);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, jwt.toString())
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body("LOGOUT SUCCESS");
 
     }
